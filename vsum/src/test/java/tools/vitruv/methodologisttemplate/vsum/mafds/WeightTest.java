@@ -1,6 +1,5 @@
 package tools.vitruv.methodologisttemplate.vsum.mafds;
 
-import java.beans.Expression;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
@@ -27,6 +26,7 @@ import tools.vitruv.framework.views.View;
 import tools.vitruv.framework.vsum.VirtualModel;
 import tools.vitruv.methodologisttemplate.vsum.uncertainty.UncertaintyTestFactory;
 import tools.vitruv.methodologisttemplate.vsum.uncertainty.UncertaintyTestUtil;
+import tools.vitruv.stoex.stoex.Expression;
 import tools.vitruv.stoex.stoex.NormalDistribution;
 import tools.vitruv.stoex.stoex.StoexFactory;
 import uncertainty.Uncertainty;
@@ -73,26 +73,33 @@ public class WeightTest {
 
         System.out.println("UNCERTAINTY AND STOEX TEST");
 
-        CommittableView uncertaintyView = UncertaintyTestUtil.getDefaultView(vsum,
+        CommittableView committableView = UncertaintyTestUtil.getDefaultView(vsum,
                 List.of(DamperRepository.class, UncertaintyAnnotationRepository.class))
                 .withChangeRecordingTrait();
-        modifyView(uncertaintyView, this::annotateWithUncertainty);
+        modifyView(committableView, this::annotateWithUncertainty);
 
-        View afterAddView = UncertaintyTestUtil.getDefaultView(vsum,
+        // ASSERT
+        View view = UncertaintyTestUtil.getDefaultView(vsum,
                 List.of(DamperRepository.class, UncertaintyAnnotationRepository.class))
                 .withChangeRecordingTrait();
 
-        Uncertainty totalMassUncertainty = getTotalMassUncertainty(afterAddView);
+        Uncertainty totalMassUncertainty = getTotalMassUncertainty(view);
         System.out.println("Total Mass Uncertainty: " + totalMassUncertainty);
         assertTrue(totalMassUncertainty != null);
         assertEquals("totalMassInKg", totalMassUncertainty.getUncertaintyLocation().getParameterLocation());
         System.out.println("Total Mass Uncertainty Distribution: "
                 + totalMassUncertainty.getEffect().getExpression());
-        // TODO expect the expresion to be a normal distribution with mu=50.7146 and
-        // sigma=0.187
-        // assertEquals(expected, actual);
-        DamperSystem damperSystem = getDamperSystem(afterAddView);
+
+        DamperSystem damperSystem = getDamperSystem(view);
         assertEquals(50.7146, damperSystem.getTotalWeightInKg(), 0.001);
+
+        Expression expr = totalMassUncertainty.getEffect().getExpression();
+        assertTrue(expr instanceof NormalDistribution);
+        NormalDistribution distribution = (NormalDistribution) totalMassUncertainty.getEffect()
+                .getExpression();
+
+        assertEquals(50.7146, distribution.getMu(), 0.001);
+        assertEquals(0.688, distribution.getSigma(), 0.001);
 
     }
 
@@ -136,7 +143,7 @@ public class WeightTest {
                 13.74, 0.5);
         Uncertainty upperTrussSphereMassUncertainty = createUncertainty(upperTruss,
                 "sphereMassInKg", 0.76,
-                0.003);
+                0.03);
         Uncertainty upperTrussRodMassUncertainty = createUncertainty(upperTruss,
                 "massOfThreadedRodInKg",
                 0.363, 0.015);
@@ -150,7 +157,7 @@ public class WeightTest {
         // Total Mass Lower Truss: 2.938
         Uncertainty lowerTrussSphereMassUncertainty = createUncertainty(lowerTruss,
                 "sphereMassInKg", 0.76,
-                0.003);
+                0.03);
         Uncertainty lowerTrussRodMassUncertainty = createUncertainty(lowerTruss,
                 "massOfThreadedRodInKg",
                 0.363, 0.015);
@@ -166,7 +173,7 @@ public class WeightTest {
                 "massOfArmInKg",
                 1.46, 0.075);
         Uncertainty guidanceElementJointMassUncertainty = createUncertainty(guidanceElement,
-                "massOfJointMiddlePartInKg", 0.9236, 0.03);
+                "massOfJointMiddlePartInKg", 0.9236, 0.05);
 
         // Spring Damper
         SpringDamper springDamper = MafdsFactory.eINSTANCE.createSpringDamper();
