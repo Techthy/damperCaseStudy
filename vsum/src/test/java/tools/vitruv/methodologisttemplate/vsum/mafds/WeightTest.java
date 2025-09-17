@@ -50,8 +50,7 @@ public class WeightTest {
                 .withChangeRecordingTrait();
         DamperSystem damperSystem = getDamperSystem(afterAddView);
 
-        // GOAL: 10.363
-        assertEquals(0.76, damperSystem.getTotalWeightInKg(), 0.001);
+        assertEquals(37.7346, damperSystem.getTotalWeightInKg(), 0.001);
 
     }
 
@@ -68,26 +67,31 @@ public class WeightTest {
         upperTruss.setMassOfThreadedRodInKg(0.363);
         upperTruss.setNumberOfThreadedRods(21);
         upperTruss.setSphereMassInKg(0.76);
+        // Total Mass Upper Truss: 9.143
 
         LowerTruss lowerTruss = MafdsFactory.eINSTANCE.createLowerTruss();
         lowerTruss.setSphereMassInKg(0.76);
         lowerTruss.setMassOfThreadedRodInKg(0.363);
         lowerTruss.setNumberOfThreadedRods(6);
+        // Total Mass Lower Truss: 2.938
 
         GuidanceElement guidanceElement = MafdsFactory.eINSTANCE.createGuidanceElement();
         guidanceElement.setMassOfArmInKg(1.46);
         guidanceElement.setNumberOfArms(3);
         guidanceElement.setMassOfJointMiddlePartInKg(0.9236);
+        // Total Mass Guidance Element: 5.3036
 
         SpringDamper springDamper = MafdsFactory.eINSTANCE.createSpringDamper();
         springDamper.setStiffnessInNPerM(27000);
         springDamper.setDampingConstantInNsPerM(140);
         springDamper.setSpringSupportMassInKg(20.35);
+        // Mass Spring Damper: 20.35
 
         damperSystem.setUpperTruss(upperTruss);
         damperSystem.setLowerTruss(lowerTruss);
         damperSystem.setGuidanceElement(guidanceElement);
         damperSystem.setSpringDamper(springDamper);
+        // Total Weight Damper System: 9.143 + 5.3036 + 20.35 + 2.938 = 37.7346
 
         view.getRootObjects(DamperRepository.class).iterator().next().setDampers(damperSystem);
     }

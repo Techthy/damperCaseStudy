@@ -13,14 +13,80 @@ execute actions in mafdsModel
 
 reaction upperTrussSphereMassChanged {
     after attribute replaced at mafdsModel::UpperTruss[sphereMassInKg] 
-    call sphereMassInKgChangedRoutine(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
 }
 
-routine sphereMassInKgChangedRoutine(Double newValue, Double oldValue, mafdsModel::DamperSystem system) {
+reaction upperTrussCrossLinkMassChanged {
+    after attribute replaced at mafdsModel::UpperTruss[crossLinkMassInKg] 
+    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction uppterTrussRodNumberOfRodsChanged {
+    after attribute replaced at mafdsModel::UpperTruss[numberOfThreadedRods] 
+    call totalMassChangedMultipleCount(newValue, oldValue, affectedEObject.getMassOfThreadedRodInKg(), affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction upperTrussRodMassChanged {
+    after attribute replaced at mafdsModel::UpperTruss[massOfThreadedRodInKg] 
+    call totalMassChangedMultipleWeight(affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction GuidanceElementMassJointMiddlePartChanged {
+    after attribute replaced at mafdsModel::GuidanceElement[massOfJointMiddlePartInKg] 
+    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction GuidanceElementNumberOfArmsChanged {
+    after attribute replaced at mafdsModel::GuidanceElement[numberOfArms] 
+    call totalMassChangedMultipleCount(newValue, oldValue, affectedEObject.getMassOfArmInKg(), affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction GuidanceElementMassOfArmChanged {
+    after attribute replaced at mafdsModel::GuidanceElement[massOfArmInKg] 
+    call totalMassChangedMultipleWeight(affectedEObject.getNumberOfArms(), newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction SpringDamperSupportMassChanged {
+    after attribute replaced at mafdsModel::SpringDamper[springSupportMassInKg] 
+    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction LowerTrussSphereMassChanged {
+    after attribute replaced at mafdsModel::LowerTruss[sphereMassInKg] 
+    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction LowerTrussRodMassChanged {
+    after attribute replaced at mafdsModel::LowerTruss[massOfThreadedRodInKg] 
+    call totalMassChangedMultipleWeight(affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction LowerTrussRodNumberOfRodsChanged {
+    after attribute replaced at mafdsModel::LowerTruss[numberOfThreadedRods] 
+    call totalMassChangedMultipleCount(newValue, oldValue, affectedEObject.getMassOfThreadedRodInKg(), affectedEObject.eContainer() as DamperSystem)
+}
+
+
+routine totalMassChangedMultipleWeight(Integer count, Double massNew, Double massOld, mafdsModel::DamperSystem system) {
     update {
-        //if (newValue === null) newValue = 0;
-        //if (oldValue === null) oldValue = 0;
-        System.out.println("UpperTruss mass changed from " + oldValue + " to " + newValue);
+        val delta = (massNew - massOld) * count;
+        System.out.println("+++++ totalMassChangedMultipleWeight: count=" + count + ", massNew=" + massNew + ", massOld=" + massOld + ", delta=" + delta);
+        system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
+    }
+}
+
+routine totalMassChangedMultipleCount(Integer countNew, Integer countOld, Double mass, mafdsModel::DamperSystem system) {
+    update {
+        if (countOld === 0) return; // initial case don't want to fire twice (once for count, once for mass)
+        val delta = (countNew - countOld) * mass;
+        System.out.println("+++++ totalMassChangedMultipleCount: countNew=" + countNew + ", countOld=" + countOld + ", mass=" + mass + ", delta=" + delta);
+        system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
+    }
+}
+
+
+routine totalMassChanged(Double newValue, Double oldValue, mafdsModel::DamperSystem system) {
+    update {
         val delta = newValue - oldValue;
         system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
     }
