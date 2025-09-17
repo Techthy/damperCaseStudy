@@ -73,7 +73,7 @@
     <eLiterals name="RESTRICT" value="2"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="StructuralEffectTypeRepresentation">
-    <eLiterals name="Continous"/>
+    <eLiterals name="Continuous"/>
     <eLiterals name="Discrete" value="1"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="StochasticityEffectType">

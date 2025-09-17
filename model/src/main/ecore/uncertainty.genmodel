@@ -44,7 +44,7 @@
       <genEnumLiterals ecoreEnumLiteral="uncertainty.ecore#//OnDeleteMode/RESTRICT"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="uncertainty.ecore#//StructuralEffectTypeRepresentation">
-      <genEnumLiterals ecoreEnumLiteral="uncertainty.ecore#//StructuralEffectTypeRepresentation/Continous"/>
+      <genEnumLiterals ecoreEnumLiteral="uncertainty.ecore#//StructuralEffectTypeRepresentation/Continuous"/>
       <genEnumLiterals ecoreEnumLiteral="uncertainty.ecore#//StructuralEffectTypeRepresentation/Discrete"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="uncertainty.ecore#//StochasticityEffectType">

@@ -326,10 +326,10 @@ routine perspectiveChangedRoutine(uncertaintyModel::UncertaintyPerspective persp
     }
 }
 
-//reaction UncertaintyEffectSpecificationChanged {
-//    after attribute replaced at uncertaintyModel::Effect[specification] 
-//    call effectChangedRoutine(affectedEObject, affectedEObject.eContainer() as Uncertainty)
-//}
+reaction UncertaintyEffectSpecificationChanged {
+    after attribute replaced at uncertaintyModel::Effect[specification] 
+    call effectChangedRoutine(affectedEObject, affectedEObject.eContainer() as Uncertainty)
+}
 
 reaction UncertaintyEffectRepresentationChanged {
     after attribute replaced at uncertaintyModel::Effect[representation] 
@@ -348,7 +348,7 @@ routine effectChangedRoutine(uncertaintyModel::Effect effect, uncertaintyModel::
     update {
         // Update all corresponding uncertainties with the new values from the sourceUncertainty
         for (correspondingUncertainty : uncertaintiesList) {
-            // correspondingUncertainty.getEffect().setSpecification(sourceUncertainty.getEffect().getSpecification());
+            correspondingUncertainty.getEffect().setSpecification(sourceUncertainty.getEffect().getSpecification());
             correspondingUncertainty.getEffect().setRepresentation(sourceUncertainty.getEffect().getRepresentation());
             correspondingUncertainty.getEffect().setStochasticity(sourceUncertainty.getEffect().getStochasticity());
         }
@@ -372,7 +372,7 @@ routine locationChangedRoutine(uncertaintyModel::UncertaintyLocation location, u
     update {
         // Update all corresponding uncertainties with the new values from the sourceUncertainty
         for (correspondingUncertainty : uncertaintiesList) {
-            //correspondingUncertainty.getUncertaintyLocation().setSpecification(location.getSpecification());
+            correspondingUncertainty.getUncertaintyLocation().setSpecification(location.getSpecification());
             correspondingUncertainty.getUncertaintyLocation().setLocation(location.getLocation());
         }
     }

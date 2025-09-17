@@ -70,16 +70,14 @@ reaction LowerTrussRodNumberOfRodsChanged {
 routine totalMassChangedMultipleWeight(Integer count, Double massNew, Double massOld, mafdsModel::DamperSystem system) {
     update {
         val delta = (massNew - massOld) * count;
-        System.out.println("+++++ totalMassChangedMultipleWeight: count=" + count + ", massNew=" + massNew + ", massOld=" + massOld + ", delta=" + delta);
         system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
     }
 }
 
 routine totalMassChangedMultipleCount(Integer countNew, Integer countOld, Double mass, mafdsModel::DamperSystem system) {
     update {
-        if (countOld === 0) return; // initial case don't want to fire twice (once for count, once for mass)
+        if (countOld === 0) return; // initial case don't fire twice (once for count, once for mass)
         val delta = (countNew - countOld) * mass;
-        System.out.println("+++++ totalMassChangedMultipleCount: countNew=" + countNew + ", countOld=" + countOld + ", mass=" + mass + ", delta=" + delta);
         system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
     }
 }
