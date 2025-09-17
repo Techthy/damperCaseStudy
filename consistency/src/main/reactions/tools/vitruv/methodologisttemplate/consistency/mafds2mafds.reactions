@@ -91,8 +91,10 @@ routine totalMassChanged(String parameterLocation, Double newValue, Double oldVa
         val uncertaintyRepo = retrieve uncertaintyModel::UncertaintyAnnotationRepository corresponding to system.eContainer()
     }
     update {
-        ReactionsHelper.handleUncertainty(uncertaintyRepo, parameterLocation, oldValue, newValue, affectedEObject, system);
-        val delta = newValue - oldValue;
-        system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
+        val uncertainty = ReactionsHelper.handleUncertainty(uncertaintyRepo, parameterLocation, oldValue, newValue, affectedEObject, system);
+        if (uncertainty == null) {
+            val delta = newValue - oldValue;
+            system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
+        }
     }
 }
