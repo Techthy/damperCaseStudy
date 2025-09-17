@@ -17,7 +17,7 @@
       <package
             uri="http://www.example.org/mafds"
             class="mafds.MafdsPackage"
-            genModel="src/main/ecore/damper.genmodel"/>
+            genModel="src/main/ecore/mafds.genmodel"/>
    </extension>
 
 </plugin>

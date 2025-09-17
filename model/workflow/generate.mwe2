@@ -31,7 +31,7 @@ Workflow {
     }
 
     component = EcoreGenerator {
-        genModel = "platform:/resource/tools.vitruv.methodologisttemplate.model/src/main/ecore/damper.genmodel"
+        genModel = "platform:/resource/tools.vitruv.methodologisttemplate.model/src/main/ecore/mafds.genmodel"
         srcPath = "platform:/resource/tools.vitruv.methodologisttemplate.model/target/generated-sources/ecore"
         generateCustomClasses = false
     }
