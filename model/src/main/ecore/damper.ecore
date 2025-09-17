@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mafds" nsURI="http://www.example.org/mafds" nsPrefix="mafds">
+  <eClassifiers xsi:type="ecore:EClass" name="DamperRepository">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dampers" eType="#//DamperSystem"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DamperSystem">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="upperTruss" lowerBound="1"
+        eType="#//UpperTruss" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="lowerTruss" lowerBound="1"
+        eType="#//LowerTruss" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="springDamper" lowerBound="1"
+        eType="#//SpringDamper" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="guidanceElements" upperBound="-1"
+        eType="#//GuidanceElement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dampingRatio" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NatrualFrequencyInHz" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ThreadedRod">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="massInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LowerTruss">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sphereMassInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rods" upperBound="-1" eType="#//ThreadedRod"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SpringDamper">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stiffnessInNPerM" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dampingConstantInNsPerM"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="springSupportMassInKg"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GuidanceElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="UpperTruss">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sphereMassInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="crossLinkMassInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rods" upperBound="-1" eType="#//ThreadedRod"
+        containment="true"/>
+  </eClassifiers>
+</ecore:EPackage>

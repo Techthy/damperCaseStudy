@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"  modelDirectory="/tools.vitruv.methodologisttemplate.model/target/generated-sources/ecore" modelPluginID="MAFDS" modelName="MAFDS"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="21.0" copyrightFields="false" operationReflection="true" importOrganizing="true">
+  <foreignModel>damper.ecore</foreignModel>
+  <genPackages prefix="Mafds" disposableProviderFactory="true" ecorePackage="damper.ecore#/">
+    <genClasses ecoreClass="damper.ecore#//DamperRepository">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference damper.ecore#//DamperRepository/dampers"/>
+    </genClasses>
+    <genClasses ecoreClass="damper.ecore#//DamperSystem">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference damper.ecore#//DamperSystem/upperTruss"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference damper.ecore#//DamperSystem/lowerTruss"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference damper.ecore#//DamperSystem/springDamper"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference damper.ecore#//DamperSystem/guidanceElements"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute damper.ecore#//DamperSystem/dampingRatio"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute damper.ecore#//DamperSystem/NatrualFrequencyInHz"/>
+    </genClasses>
+    <genClasses ecoreClass="damper.ecore#//ThreadedRod">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute damper.ecore#//ThreadedRod/massInKg"/>
+    </genClasses>
+    <genClasses ecoreClass="damper.ecore#//LowerTruss">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute damper.ecore#//LowerTruss/sphereMassInKg"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference damper.ecore#//LowerTruss/rods"/>
+    </genClasses>
+    <genClasses ecoreClass="damper.ecore#//SpringDamper">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute damper.ecore#//SpringDamper/stiffnessInNPerM"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute damper.ecore#//SpringDamper/dampingConstantInNsPerM"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute damper.ecore#//SpringDamper/springSupportMassInKg"/>
+    </genClasses>
+    <genClasses ecoreClass="damper.ecore#//GuidanceElement"/>
+    <genClasses ecoreClass="damper.ecore#//UpperTruss">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute damper.ecore#//UpperTruss/sphereMassInKg"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute damper.ecore#//UpperTruss/crossLinkMassInKg"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference damper.ecore#//UpperTruss/rods"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
