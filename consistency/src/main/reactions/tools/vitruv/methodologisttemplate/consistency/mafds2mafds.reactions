@@ -11,22 +11,22 @@ in reaction to changes in mafdsModel
 execute actions in mafdsModel
 
 
-reaction upperTrussSphereMassChanged {
+reaction UpperTrussSphereMassChanged {
     after attribute replaced at mafdsModel::UpperTruss[sphereMassInKg] 
     call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
 }
 
-reaction upperTrussCrossLinkMassChanged {
+reaction UpperTrussCrossLinkMassChanged {
     after attribute replaced at mafdsModel::UpperTruss[crossLinkMassInKg] 
     call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
 }
 
-reaction uppterTrussRodNumberOfRodsChanged {
+reaction UpperTrussRodNumberOfRodsChanged {
     after attribute replaced at mafdsModel::UpperTruss[numberOfThreadedRods] 
     call totalMassChangedMultipleCount(newValue, oldValue, affectedEObject.getMassOfThreadedRodInKg(), affectedEObject.eContainer() as DamperSystem)
 }
 
-reaction upperTrussRodMassChanged {
+reaction UpperTrussRodMassChanged {
     after attribute replaced at mafdsModel::UpperTruss[massOfThreadedRodInKg] 
     call totalMassChangedMultipleWeight(affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
 }
