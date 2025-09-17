@@ -48,9 +48,9 @@ public class UncertaintyTestFactory {
 	}
 
 	public static UncertaintyLocation createUncertaintyLocation(List<EObject> referencedComponents,
-			UncertaintyLocationType locationtype, String parameterLocation) {
+			UncertaintyLocationType locationType, String parameterLocation) {
 		UncertaintyLocation location = UncertaintyFactory.eINSTANCE.createUncertaintyLocation();
-		location.setLocation(locationtype);
+		location.setLocation(locationType);
 		location.setSpecification("Location specification");
 		location.setParameterLocation(parameterLocation);
 		location.getReferencedComponents().addAll(referencedComponents);
@@ -96,8 +96,9 @@ public class UncertaintyTestFactory {
 		uncertainty.setSetManually(true);
 		uncertainty.setOnDelete(OnDeleteMode.CASCADE);
 
-		uncertainty.setUncertaintyLocation(createUncertaintyLocation(
-				List.of(referencedComponent), UncertaintyLocationType.PARAMETER, parameterLocation));
+		UncertaintyLocation location = createUncertaintyLocation(List.of(referencedComponent),
+				UncertaintyLocationType.PARAMETER, parameterLocation);
+		uncertainty.setUncertaintyLocation(location);
 		uncertainty.setEffect(createEffect(expression));
 		uncertainty.setPerspective(createUncertaintyPerspective());
 		uncertainty.setPattern(createPattern());

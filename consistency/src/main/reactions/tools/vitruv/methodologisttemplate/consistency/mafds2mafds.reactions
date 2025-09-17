@@ -3,7 +3,10 @@ import mafds.DamperSystem;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import tools.vitruv.methodologisttemplate.consistency.utils.ReactionsHelper;
+
 import "http://www.example.org/mafds" as mafdsModel
+import "http://www.example.org/uncertainty" as uncertaintyModel
 
 
 reactions: mafds2mafds
@@ -13,12 +16,12 @@ execute actions in mafdsModel
 
 reaction UpperTrussSphereMassChanged {
     after attribute replaced at mafdsModel::UpperTruss[sphereMassInKg] 
-    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChanged("sphereMassInKg", newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction UpperTrussCrossLinkMassChanged {
     after attribute replaced at mafdsModel::UpperTruss[crossLinkMassInKg] 
-    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChanged("crossLinkMassInKg", newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction UpperTrussRodNumberOfRodsChanged {
@@ -33,7 +36,7 @@ reaction UpperTrussRodMassChanged {
 
 reaction GuidanceElementMassJointMiddlePartChanged {
     after attribute replaced at mafdsModel::GuidanceElement[massOfJointMiddlePartInKg] 
-    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChanged("massOfJointMiddlePartInKg", newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction GuidanceElementNumberOfArmsChanged {
@@ -48,12 +51,12 @@ reaction GuidanceElementMassOfArmChanged {
 
 reaction SpringDamperSupportMassChanged {
     after attribute replaced at mafdsModel::SpringDamper[springSupportMassInKg] 
-    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChanged("springSupportMassInKg", newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction LowerTrussSphereMassChanged {
     after attribute replaced at mafdsModel::LowerTruss[sphereMassInKg] 
-    call totalMassChanged(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChanged("sphereMassInKg", newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction LowerTrussRodMassChanged {
@@ -83,8 +86,12 @@ routine totalMassChangedMultipleCount(Integer countNew, Integer countOld, Double
 }
 
 
-routine totalMassChanged(Double newValue, Double oldValue, mafdsModel::DamperSystem system) {
+routine totalMassChanged(String parameterLocation, Double newValue, Double oldValue, EObject affectedEObject, mafdsModel::DamperSystem system) {
+    match {
+        val uncertaintyRepo = retrieve uncertaintyModel::UncertaintyAnnotationRepository corresponding to system.eContainer()
+    }
     update {
+        ReactionsHelper.handleUncertainty(uncertaintyRepo, parameterLocation, oldValue, newValue, affectedEObject, system);
         val delta = newValue - oldValue;
         system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
     }
