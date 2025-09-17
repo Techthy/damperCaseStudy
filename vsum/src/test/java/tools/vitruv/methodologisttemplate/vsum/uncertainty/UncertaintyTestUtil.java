@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
+import mir.reactions.mafds2mafds.Mafds2mafdsChangePropagationSpecification;
 import mir.reactions.uncertainty2uncertainty.Uncertainty2uncertaintyChangePropagationSpecification;
 import tools.vitruv.change.propagation.ChangePropagationMode;
 import tools.vitruv.change.testutils.TestUserInteraction;
@@ -30,6 +31,7 @@ public class UncertaintyTestUtil {
 						new TestUserInteraction.ResultProvider(new TestUserInteraction()))
 				.withChangePropagationSpecification(
 						new Uncertainty2uncertaintyChangePropagationSpecification())
+				.withChangePropagationSpecification(new Mafds2mafdsChangePropagationSpecification())
 				.buildAndInitialize();
 		model.setChangePropagationMode(ChangePropagationMode.TRANSITIVE_CYCLIC);
 		return model;

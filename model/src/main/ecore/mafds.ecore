@@ -12,18 +12,17 @@
         eType="#//LowerTruss" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="springDamper" lowerBound="1"
         eType="#//SpringDamper" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="guidanceElements" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="guidanceElement" lowerBound="1"
         eType="#//GuidanceElement" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dampingRatio" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="NatrualFrequencyInHz" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ThreadedRod">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="massInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="totalWeightInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LowerTruss">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sphereMassInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="rods" upperBound="-1" eType="#//ThreadedRod"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfThreadedRods" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="massOfThreadedRodInKg"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpringDamper">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="stiffnessInNPerM" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
@@ -32,11 +31,17 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="springSupportMassInKg"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="GuidanceElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="GuidanceElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfArms" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="massOfArmInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="massOfJointMiddlePartInKg"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UpperTruss">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sphereMassInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="crossLinkMassInKg" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="rods" upperBound="-1" eType="#//ThreadedRod"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfThreadedRods" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="massOfThreadedRodInKg"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
   </eClassifiers>
 </ecore:EPackage>

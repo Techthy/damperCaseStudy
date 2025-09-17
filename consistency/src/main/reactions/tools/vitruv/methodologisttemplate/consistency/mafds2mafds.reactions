@@ -1,0 +1,27 @@
+
+import mafds.DamperSystem;
+
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import "http://www.example.org/mafds" as mafdsModel
+
+
+reactions: mafds2mafds
+in reaction to changes in mafdsModel
+execute actions in mafdsModel
+
+
+reaction upperTrussSphereMassChanged {
+    after attribute replaced at mafdsModel::UpperTruss[sphereMassInKg] 
+    call sphereMassInKgChangedRoutine(newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+}
+
+routine sphereMassInKgChangedRoutine(Double newValue, Double oldValue, mafdsModel::DamperSystem system) {
+    update {
+        //if (newValue === null) newValue = 0;
+        //if (oldValue === null) oldValue = 0;
+        System.out.println("UpperTruss mass changed from " + oldValue + " to " + newValue);
+        val delta = newValue - oldValue;
+        system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
+    }
+}
