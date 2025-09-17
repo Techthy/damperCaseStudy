@@ -31,7 +31,7 @@ reaction UpperTrussRodNumberOfRodsChanged {
 
 reaction UpperTrussRodMassChanged {
     after attribute replaced at mafdsModel::UpperTruss[massOfThreadedRodInKg] 
-    call totalMassChangedMultipleWeight(affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChangedMultipleWeight("massOfThreadedRodInKg", affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction GuidanceElementMassJointMiddlePartChanged {
@@ -46,7 +46,7 @@ reaction GuidanceElementNumberOfArmsChanged {
 
 reaction GuidanceElementMassOfArmChanged {
     after attribute replaced at mafdsModel::GuidanceElement[massOfArmInKg] 
-    call totalMassChangedMultipleWeight(affectedEObject.getNumberOfArms(), newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChangedMultipleWeight("massOfArmInKg", affectedEObject.getNumberOfArms(), newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction SpringDamperSupportMassChanged {
@@ -61,7 +61,7 @@ reaction LowerTrussSphereMassChanged {
 
 reaction LowerTrussRodMassChanged {
     after attribute replaced at mafdsModel::LowerTruss[massOfThreadedRodInKg] 
-    call totalMassChangedMultipleWeight(affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChangedMultipleWeight("massOfThreadedRodInKg", affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction LowerTrussRodNumberOfRodsChanged {
@@ -70,13 +70,19 @@ reaction LowerTrussRodNumberOfRodsChanged {
 }
 
 
-routine totalMassChangedMultipleWeight(Integer count, Double massNew, Double massOld, mafdsModel::DamperSystem system) {
+routine totalMassChangedMultipleWeight(String parameterLocation, Integer count, Double massNew, Double massOld, EObject affectedEObject, mafdsModel::DamperSystem system) {
+    match {
+        val uncertaintyRepo = retrieve uncertaintyModel::UncertaintyAnnotationRepository corresponding to system.eContainer()
+    }
     update {
+        val uncertainty = ReactionsHelper.handleUncertaintyMultpleWeightChanged(uncertaintyRepo, parameterLocation, count, massNew, massOld, affectedEObject, system);
+        if (uncertainty !== null) return;
         val delta = (massNew - massOld) * count;
         system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
     }
 }
 
+// example does not have uncertainty for count changes
 routine totalMassChangedMultipleCount(Integer countNew, Integer countOld, Double mass, mafdsModel::DamperSystem system) {
     update {
         if (countOld === 0) return; // initial case don't fire twice (once for count, once for mass)
@@ -92,9 +98,8 @@ routine totalMassChanged(String parameterLocation, Double newValue, Double oldVa
     }
     update {
         val uncertainty = ReactionsHelper.handleUncertainty(uncertaintyRepo, parameterLocation, oldValue, newValue, affectedEObject, system);
-        if (uncertainty == null) {
-            val delta = newValue - oldValue;
-            system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
-        }
+        if (uncertainty !== null) return;
+        val delta = newValue - oldValue;
+        system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
     }
 }
