@@ -37,7 +37,7 @@ public class UncertaintyTestUtil {
 		return model;
 	}
 
-	// Registers a Brakesystem, CADRepository and UncertaintyAnnotationRepository
+	// Registers UncertaintyAnnotationRepository
 	public static void registerRootObjects(VirtualModel virtualModel, Path filePath) {
 		CommittableView view = getDefaultView(virtualModel,
 				List.of(UncertaintyAnnotationRepository.class))
@@ -49,21 +49,6 @@ public class UncertaintyTestUtil {
 					org.eclipse.emf.common.util.URI
 							.createFileURI(filePath.toString() + "/uncertainty.model"));
 
-		});
-
-	}
-
-	// Registers anUncertaintyAnnotationRepository
-	public static void registerUncertaintyAnnotationRepositoryAsRoot(VirtualModel virtualModel, Path filePath) {
-		CommittableView view = getDefaultView(virtualModel,
-				List.of(UncertaintyAnnotationRepository.class))
-				.withChangeRecordingTrait();
-		modifyView(view, (CommittableView v) -> {
-			v.registerRoot(
-					UncertaintyFactory.eINSTANCE
-							.createUncertaintyAnnotationRepository(),
-					org.eclipse.emf.common.util.URI
-							.createFileURI(filePath.toString() + "/uncertainty.model"));
 		});
 
 	}
