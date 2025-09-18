@@ -15,8 +15,8 @@ import uncertainty.UncertaintyLocation;
 import uncertainty.UncertaintyLocationType;
 import uncertainty.UncertaintyPerspective;
 
-public class ReactionsHelper {
-    private ReactionsHelper() {
+public class TotalWeightReactionsHelper {
+    private TotalWeightReactionsHelper() {
         // Utility class
     }
 
@@ -49,8 +49,14 @@ public class ReactionsHelper {
             helper.putVariable("totalMassInKg", totalMassUncertainty.getEffect().getExpression());
         }
 
+        Expression totalDelta;
+        helper.putVariable("totalDelta", 0);
+        for (int i = 0; i < count; i++) {
+            totalDelta = (Expression) helper.evaluateToStoexExpression("totalDelta + (massNew - massOld)");
+            helper.putVariable("totalDelta", totalDelta);
+        }
         Expression newTotalMassExpr = (Expression) helper
-                .evaluateToStoexExpression("totalMassInKg + (massNew - massOld) * count ");
+                .evaluateToStoexExpression("totalMassInKg + totalDelta");
         totalMassUncertainty.getEffect().setExpression(newTotalMassExpr);
         springDamper.setTotalWeightInKg(helper.getMean(newTotalMassExpr).doubleValue());
 

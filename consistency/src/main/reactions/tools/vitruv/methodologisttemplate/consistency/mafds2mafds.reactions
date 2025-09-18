@@ -3,7 +3,7 @@ import mafds.DamperSystem;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import tools.vitruv.methodologisttemplate.consistency.utils.ReactionsHelper;
+import tools.vitruv.methodologisttemplate.consistency.utils.TotalWeightReactionsHelper;
 
 import "http://www.example.org/mafds" as mafdsModel
 import "http://www.example.org/uncertainty" as uncertaintyModel
@@ -75,7 +75,7 @@ routine totalMassChangedMultipleWeight(String parameterLocation, Integer count, 
         val uncertaintyRepo = retrieve uncertaintyModel::UncertaintyAnnotationRepository corresponding to system.eContainer()
     }
     update {
-        val uncertainty = ReactionsHelper.handleUncertaintyMultpleWeightChanged(uncertaintyRepo, parameterLocation, count, massNew, massOld, affectedEObject, system);
+        val uncertainty = TotalWeightReactionsHelper.handleUncertaintyMultpleWeightChanged(uncertaintyRepo, parameterLocation, count, massNew, massOld, affectedEObject, system);
         if (uncertainty !== null) return;
         val delta = (massNew - massOld) * count;
         system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
@@ -97,7 +97,7 @@ routine totalMassChanged(String parameterLocation, Double newValue, Double oldVa
         val uncertaintyRepo = retrieve uncertaintyModel::UncertaintyAnnotationRepository corresponding to system.eContainer()
     }
     update {
-        val uncertainty = ReactionsHelper.handleUncertainty(uncertaintyRepo, parameterLocation, oldValue, newValue, affectedEObject, system);
+        val uncertainty = TotalWeightReactionsHelper.handleUncertainty(uncertaintyRepo, parameterLocation, oldValue, newValue, affectedEObject, system);
         if (uncertainty !== null) return;
         val delta = newValue - oldValue;
         system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);

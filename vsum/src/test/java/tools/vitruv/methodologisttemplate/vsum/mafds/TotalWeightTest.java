@@ -33,7 +33,7 @@ import uncertainty.Uncertainty;
 import uncertainty.UncertaintyAnnotationRepository;
 import uncertainty.UncertaintyLocationType;
 
-public class WeightTest {
+public class TotalWeightTest {
 
     @BeforeAll
     static void setup() {
@@ -99,7 +99,7 @@ public class WeightTest {
                 .getExpression();
 
         assertEquals(50.7146, distribution.getMu(), 0.001);
-        assertEquals(0.688, distribution.getSigma(), 0.001);
+        assertEquals(0.5829, distribution.getSigma(), 0.001);
 
     }
 
