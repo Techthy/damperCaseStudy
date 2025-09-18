@@ -49,14 +49,10 @@ public class TotalWeightReactionsHelper {
             helper.putVariable("totalMassInKg", totalMassUncertainty.getEffect().getExpression());
         }
 
-        Expression totalDelta;
-        helper.putVariable("totalDelta", 0);
-        for (int i = 0; i < count; i++) {
-            totalDelta = (Expression) helper.evaluateToStoexExpression("totalDelta + (massNew - massOld)");
-            helper.putVariable("totalDelta", totalDelta);
-        }
-        Expression newTotalMassExpr = (Expression) helper
-                .evaluateToStoexExpression("totalMassInKg + totalDelta");
+        Expression delta = (Expression) helper.evaluateToStoexExpression("massNew - massOld");
+        Expression totalDelta = sumExpressions(count, delta);
+        helper.putVariable("totalDelta", totalDelta);
+        Expression newTotalMassExpr = helper.evaluateToStoexExpression("totalMassInKg + totalDelta");
         totalMassUncertainty.getEffect().setExpression(newTotalMassExpr);
         springDamper.setTotalWeightInKg(helper.getMean(newTotalMassExpr).doubleValue());
 
@@ -64,6 +60,18 @@ public class TotalWeightReactionsHelper {
             repo.getUncertainties().add(totalMassUncertainty);
         }
         return totalMassUncertainty;
+    }
+
+    private static Expression sumExpressions(int k, Expression expr) {
+        StoexConsistencyHelper helper = new StoexConsistencyHelper();
+        Expression sum = expr;
+        helper.putVariable("expr", expr);
+        helper.putVariable("sum", 0);
+        for (int i = 0; i < k; i++) {
+            sum = helper.evaluateToStoexExpression("sum + expr");
+            helper.putVariable("sum", sum);
+        }
+        return sum;
     }
 
     public static Uncertainty handleUncertainty(UncertaintyAnnotationRepository repo, String parameterLocation,
