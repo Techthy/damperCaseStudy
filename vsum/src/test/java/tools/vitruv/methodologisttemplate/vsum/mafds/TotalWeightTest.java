@@ -64,34 +64,47 @@ public class TotalWeightTest {
     }
 
     @Test
-    @DisplayName("Model Damper System and Compute Weight With Uncertainty Annotations and StoEx")
-    void addDamperSystemWithUncertaintyAndStoExTest(@TempDir Path tempDir) {
-
-        // SETUP VSUM
+    @DisplayName("Model Damper System and Compute Weight With Uncertainty Annotations")
+    void addDamperSystemWithUncertaintyTest(@TempDir Path tempDir) {
         VirtualModel vsum = UncertaintyTestUtil.createDefaultVirtualModel(tempDir);
         UncertaintyTestUtil.registerRootObjects(vsum, tempDir);
-
-        System.out.println("UNCERTAINTY AND STOEX TEST");
-
         CommittableView committableView = UncertaintyTestUtil.getDefaultView(vsum,
                 List.of(DamperRepository.class, UncertaintyAnnotationRepository.class))
                 .withChangeRecordingTrait();
         modifyView(committableView, this::annotateWithUncertainty);
-
-        // ASSERT
         View view = UncertaintyTestUtil.getDefaultView(vsum,
                 List.of(DamperRepository.class, UncertaintyAnnotationRepository.class))
                 .withChangeRecordingTrait();
+        DamperSystem damperSystem = getDamperSystem(view);
+        assertEquals(50.7146, damperSystem.getTotalWeightInKg(), 0.001);
+        // Assert that number of uncertainties is as expected
+        UncertaintyAnnotationRepository uncertaintyRepo = view
+                .getRootObjects(UncertaintyAnnotationRepository.class).iterator().next();
+        assertEquals(10, uncertaintyRepo.getUncertainties().size());
+    }
+
+    @Test
+    @DisplayName("Model Damper System and Compute Weight With Uncertainty Annotations and StoEx")
+    void addDamperSystemWithUncertaintyAndStoExTest(@TempDir Path tempDir) {
+        VirtualModel vsum = UncertaintyTestUtil.createDefaultVirtualModel(tempDir);
+        UncertaintyTestUtil.registerRootObjects(vsum, tempDir);
+
+        CommittableView committableView = UncertaintyTestUtil.getDefaultView(vsum,
+                List.of(DamperRepository.class, UncertaintyAnnotationRepository.class))
+                .withChangeRecordingTrait();
+        modifyView(committableView, this::annotateWithUncertaintyAndStoex);
+
+        View view = UncertaintyTestUtil.getDefaultView(vsum,
+                List.of(DamperRepository.class, UncertaintyAnnotationRepository.class))
+                .withChangeRecordingTrait();
+
+        DamperSystem damperSystem = getDamperSystem(view);
+        assertEquals(50.7146, damperSystem.getTotalWeightInKg(), 0.001);
 
         Uncertainty totalMassUncertainty = getTotalMassUncertainty(view);
         System.out.println("Total Mass Uncertainty: " + totalMassUncertainty);
         assertTrue(totalMassUncertainty != null);
         assertEquals("totalMassInKg", totalMassUncertainty.getUncertaintyLocation().getParameterLocation());
-        System.out.println("Total Mass Uncertainty Distribution: "
-                + totalMassUncertainty.getEffect().getExpression());
-
-        DamperSystem damperSystem = getDamperSystem(view);
-        assertEquals(50.7146, damperSystem.getTotalWeightInKg(), 0.001);
 
         Expression expr = totalMassUncertainty.getEffect().getExpression();
         assertTrue(expr instanceof NormalDistribution);
@@ -127,6 +140,78 @@ public class TotalWeightTest {
     }
 
     private void annotateWithUncertainty(CommittableView view) {
+        DamperSystem damperSystem = MafdsFactory.eINSTANCE.createDamperSystem();
+
+        UpperTruss upperTruss = MafdsFactory.eINSTANCE.createUpperTruss();
+        upperTruss.setCrossLinkMassInKg(13.74);
+        upperTruss.setMassOfThreadedRodInKg(0.363);
+        upperTruss.setNumberOfThreadedRods(21);
+        upperTruss.setSphereMassInKg(0.76);
+        damperSystem.setUpperTruss(upperTruss);
+        // Total Mass Upper Truss: 22.123
+
+        // Upper Truss
+        Uncertainty upperTrussCrossLinkMassUncertainty = createUncertainty(upperTruss,
+                "crossLinkMassInKg");
+        Uncertainty upperTrussSphereMassUncertainty = createUncertainty(upperTruss,
+                "sphereMassInKg");
+        Uncertainty upperTrussRodMassUncertainty = createUncertainty(upperTruss,
+                "massOfThreadedRodInKg");
+
+        // Lower Truss
+        LowerTruss lowerTruss = MafdsFactory.eINSTANCE.createLowerTruss();
+        lowerTruss.setSphereMassInKg(0.76);
+        lowerTruss.setMassOfThreadedRodInKg(0.363);
+        lowerTruss.setNumberOfThreadedRods(6);
+        damperSystem.setLowerTruss(lowerTruss);
+        // Total Mass Lower Truss: 2.938
+        Uncertainty lowerTrussSphereMassUncertainty = createUncertainty(lowerTruss,
+                "sphereMassInKg");
+        Uncertainty lowerTrussRodMassUncertainty = createUncertainty(lowerTruss,
+                "massOfThreadedRodInKg");
+
+        // Guidance Element
+        GuidanceElement guidanceElement = MafdsFactory.eINSTANCE.createGuidanceElement();
+        guidanceElement.setMassOfArmInKg(1.46);
+        guidanceElement.setNumberOfArms(3);
+        guidanceElement.setMassOfJointMiddlePartInKg(0.9236);
+        damperSystem.setGuidanceElement(guidanceElement);
+        // Total Mass Guidance Element: 5.3036
+        Uncertainty guidanceElementArmMassUncertainty = createUncertainty(guidanceElement,
+                "massOfArmInKg");
+        Uncertainty guidanceElementJointMassUncertainty = createUncertainty(guidanceElement,
+                "massOfJointMiddlePartInKg");
+
+        // Spring Damper
+        SpringDamper springDamper = MafdsFactory.eINSTANCE.createSpringDamper();
+        springDamper.setStiffnessInNPerM(27000);
+        springDamper.setDampingConstantInNsPerM(140);
+        springDamper.setSpringSupportMassInKg(20.35);
+        damperSystem.setSpringDamper(springDamper);
+        // Mass Spring Damper: 20.35
+        Uncertainty springStiffnessUncertainty = createUncertainty(springDamper, "stiffnessInNPerM",
+                27000,
+                1200);
+        Uncertainty springDampingConstantUncertainty = createUncertainty(springDamper,
+                "dampingConstantInNsPerM");
+        Uncertainty springSupportMassUncertainty = createUncertainty(springDamper,
+                "springSupportMassInKg");
+        view.getRootObjects(DamperRepository.class).iterator().next().setDampers(damperSystem);
+
+        List<Uncertainty> allUncertainties = List.of(upperTrussCrossLinkMassUncertainty,
+                upperTrussSphereMassUncertainty,
+                upperTrussRodMassUncertainty, lowerTrussSphereMassUncertainty,
+                lowerTrussRodMassUncertainty,
+                guidanceElementArmMassUncertainty, guidanceElementJointMassUncertainty,
+                springStiffnessUncertainty,
+                springDampingConstantUncertainty, springSupportMassUncertainty);
+
+        view.getRootObjects(UncertaintyAnnotationRepository.class).iterator().next()
+                .getUncertainties().addAll(allUncertainties);
+
+    }
+
+    private void annotateWithUncertaintyAndStoex(CommittableView view) {
         DamperSystem damperSystem = MafdsFactory.eINSTANCE.createDamperSystem();
 
         UpperTruss upperTruss = MafdsFactory.eINSTANCE.createUpperTruss();
@@ -202,6 +287,10 @@ public class TotalWeightTest {
 
         view.getRootObjects(UncertaintyAnnotationRepository.class).iterator().next()
                 .getUncertainties().addAll(allUncertainties);
+    }
+
+    private Uncertainty createUncertainty(EObject referencedObject, String parameter) {
+        return UncertaintyTestFactory.createUncertainty(referencedObject, parameter, null);
     }
 
     private Uncertainty createUncertainty(EObject referencedObject, String parameter, double mu, double sigma) {
