@@ -1,9 +1,8 @@
 
 import mafds.DamperSystem;
 
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import tools.vitruv.methodologisttemplate.consistency.utils.TotalWeightReactionsHelper;
+import tools.vitruv.methodologisttemplate.consistency.TotalWeightReactionsHelper;
 
 import "http://www.example.org/mafds" as mafdsModel
 import "http://www.example.org/uncertainty" as uncertaintyModel

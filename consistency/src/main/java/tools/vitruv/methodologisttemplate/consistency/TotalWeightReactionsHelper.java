@@ -1,9 +1,10 @@
-package tools.vitruv.methodologisttemplate.consistency.utils;
+package tools.vitruv.methodologisttemplate.consistency;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import mafds.DamperSystem;
+import tools.vitruv.methodologisttemplate.consistency.utils.StoexConsistencyHelper;
 import tools.vitruv.stoex.stoex.Expression;
 import tools.vitruv.stoex.stoex.NormalDistribution;
 import uncertainty.Effect;
