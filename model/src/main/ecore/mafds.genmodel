@@ -7,7 +7,7 @@
   <foreignModel>mafds.ecore</foreignModel>
   <genPackages prefix="Mafds" disposableProviderFactory="true" ecorePackage="mafds.ecore#/">
     <genClasses ecoreClass="mafds.ecore#//DamperRepository">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mafds.ecore#//DamperRepository/dampers"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mafds.ecore#//DamperRepository/damperSystems"/>
     </genClasses>
     <genClasses ecoreClass="mafds.ecore#//DamperSystem">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mafds.ecore#//DamperSystem/upperTruss"/>
@@ -16,7 +16,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mafds.ecore#//DamperSystem/guidanceElement"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mafds.ecore#//DamperSystem/dampingRatio"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mafds.ecore#//DamperSystem/NatrualFrequencyInHz"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mafds.ecore#//DamperSystem/totalWeightInKg"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mafds.ecore#//DamperSystem/totalMassInKg"/>
     </genClasses>
     <genClasses ecoreClass="mafds.ecore#//LowerTruss">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mafds.ecore#//LowerTruss/sphereMassInKg"/>

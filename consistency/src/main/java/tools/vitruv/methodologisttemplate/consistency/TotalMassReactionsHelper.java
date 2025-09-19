@@ -6,7 +6,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import mafds.DamperSystem;
 import tools.vitruv.methodologisttemplate.consistency.utils.StoexConsistencyHelper;
 import tools.vitruv.stoex.stoex.Expression;
-import tools.vitruv.stoex.stoex.NormalDistribution;
 import uncertainty.Effect;
 import uncertainty.Pattern;
 import uncertainty.Uncertainty;
@@ -16,12 +15,12 @@ import uncertainty.UncertaintyLocation;
 import uncertainty.UncertaintyLocationType;
 import uncertainty.UncertaintyPerspective;
 
-public class TotalWeightReactionsHelper {
-    private TotalWeightReactionsHelper() {
+public class TotalMassReactionsHelper {
+    private TotalMassReactionsHelper() {
         // Utility class
     }
 
-    public static Uncertainty handleUncertaintyMultpleWeightChanged(UncertaintyAnnotationRepository repo,
+    public static Uncertainty handleUncertaintyMultiple(UncertaintyAnnotationRepository repo,
             String parameterLocation, Integer count, Double massNew, Double massOld, EObject affectedEObject,
             DamperSystem springDamper) {
 
@@ -45,7 +44,7 @@ public class TotalWeightReactionsHelper {
             totalMassUncertainty.setId(EcoreUtil.generateUUID());
             totalMassUncertainty.getUncertaintyLocation().setParameterLocation("totalMassInKg");
             totalMassUncertainty.getUncertaintyLocation().getReferencedComponents().add(affectedEObject.eContainer());
-            helper.putVariable("totalMassInKg", springDamper.getTotalWeightInKg());
+            helper.putVariable("totalMassInKg", springDamper.getTotalMassInKg());
         } else {
             helper.putVariable("totalMassInKg", totalMassUncertainty.getEffect().getExpression());
         }
@@ -55,7 +54,7 @@ public class TotalWeightReactionsHelper {
         helper.putVariable("totalDelta", totalDelta);
         Expression newTotalMassExpr = helper.evaluateToStoexExpression("totalMassInKg + totalDelta");
         totalMassUncertainty.getEffect().setExpression(newTotalMassExpr);
-        springDamper.setTotalWeightInKg(helper.getMean(newTotalMassExpr).doubleValue());
+        springDamper.setTotalMassInKg(helper.getMean(newTotalMassExpr).doubleValue());
 
         if (!repo.getUncertainties().contains(totalMassUncertainty)) {
             repo.getUncertainties().add(totalMassUncertainty);
@@ -97,7 +96,7 @@ public class TotalWeightReactionsHelper {
             totalMassUncertainty.setId(EcoreUtil.generateUUID());
             totalMassUncertainty.getUncertaintyLocation().setParameterLocation("totalMassInKg");
             totalMassUncertainty.getUncertaintyLocation().getReferencedComponents().add(affectedEObject.eContainer());
-            helper.putVariable("totalMassInKg", springDamper.getTotalWeightInKg());
+            helper.putVariable("totalMassInKg", springDamper.getTotalMassInKg());
         } else {
             helper.putVariable("totalMassInKg", totalMassUncertainty.getEffect().getExpression());
         }
@@ -105,7 +104,7 @@ public class TotalWeightReactionsHelper {
         Expression newTotalMassExpr = (Expression) helper
                 .evaluateToStoexExpression("totalMassInKg + newValue - oldValue");
         totalMassUncertainty.getEffect().setExpression(newTotalMassExpr);
-        springDamper.setTotalWeightInKg(helper.getMean(newTotalMassExpr).doubleValue());
+        springDamper.setTotalMassInKg(helper.getMean(newTotalMassExpr).doubleValue());
 
         if (!repo.getUncertainties().contains(totalMassUncertainty)) {
             repo.getUncertainties().add(totalMassUncertainty);

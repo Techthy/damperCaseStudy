@@ -2,7 +2,7 @@
 import mafds.DamperSystem;
 
 
-import tools.vitruv.methodologisttemplate.consistency.TotalWeightReactionsHelper;
+import tools.vitruv.methodologisttemplate.consistency.TotalMassReactionsHelper;
 
 import "http://www.example.org/mafds" as mafdsModel
 import "http://www.example.org/uncertainty" as uncertaintyModel
@@ -30,7 +30,7 @@ reaction UpperTrussRodNumberOfRodsChanged {
 
 reaction UpperTrussRodMassChanged {
     after attribute replaced at mafdsModel::UpperTruss[massOfThreadedRodInKg] 
-    call totalMassChangedMultipleWeight("massOfThreadedRodInKg", affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChangedMultipleMass("massOfThreadedRodInKg", affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction GuidanceElementMassJointMiddlePartChanged {
@@ -45,7 +45,7 @@ reaction GuidanceElementNumberOfArmsChanged {
 
 reaction GuidanceElementMassOfArmChanged {
     after attribute replaced at mafdsModel::GuidanceElement[massOfArmInKg] 
-    call totalMassChangedMultipleWeight("massOfArmInKg", affectedEObject.getNumberOfArms(), newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChangedMultipleMass("massOfArmInKg", affectedEObject.getNumberOfArms(), newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction SpringDamperSupportMassChanged {
@@ -60,7 +60,7 @@ reaction LowerTrussSphereMassChanged {
 
 reaction LowerTrussRodMassChanged {
     after attribute replaced at mafdsModel::LowerTruss[massOfThreadedRodInKg] 
-    call totalMassChangedMultipleWeight("massOfThreadedRodInKg", affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
+    call totalMassChangedMultipleMass("massOfThreadedRodInKg", affectedEObject.getNumberOfThreadedRods(), newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
 }
 
 reaction LowerTrussRodNumberOfRodsChanged {
@@ -69,15 +69,15 @@ reaction LowerTrussRodNumberOfRodsChanged {
 }
 
 
-routine totalMassChangedMultipleWeight(String parameterLocation, Integer count, Double massNew, Double massOld, EObject affectedEObject, mafdsModel::DamperSystem system) {
+routine totalMassChangedMultipleMass(String parameterLocation, Integer count, Double massNew, Double massOld, EObject affectedEObject, mafdsModel::DamperSystem system) {
     match {
         val uncertaintyRepo = retrieve uncertaintyModel::UncertaintyAnnotationRepository corresponding to system.eContainer()
     }
     update {
-        val uncertainty = TotalWeightReactionsHelper.handleUncertaintyMultpleWeightChanged(uncertaintyRepo, parameterLocation, count, massNew, massOld, affectedEObject, system);
+        val uncertainty = TotalMassReactionsHelper.handleUncertaintyMultiple(uncertaintyRepo, parameterLocation, count, massNew, massOld, affectedEObject, system);
         if (uncertainty !== null) return;
         val delta = (massNew - massOld) * count;
-        system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
+        system.setTotalMassInKg(system.getTotalMassInKg() + delta);
     }
 }
 
@@ -86,7 +86,7 @@ routine totalMassChangedMultipleCount(Integer countNew, Integer countOld, Double
     update {
         if (countOld === 0) return; // initial case don't fire twice (once for count, once for mass)
         val delta = (countNew - countOld) * mass;
-        system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
+        system.setTotalMassInKg(system.getTotalMassInKg() + delta);
     }
 }
 
@@ -96,9 +96,9 @@ routine totalMassChanged(String parameterLocation, Double newValue, Double oldVa
         val uncertaintyRepo = retrieve uncertaintyModel::UncertaintyAnnotationRepository corresponding to system.eContainer()
     }
     update {
-        val uncertainty = TotalWeightReactionsHelper.handleUncertainty(uncertaintyRepo, parameterLocation, oldValue, newValue, affectedEObject, system);
+        val uncertainty = TotalMassReactionsHelper.handleUncertainty(uncertaintyRepo, parameterLocation, oldValue, newValue, affectedEObject, system);
         if (uncertainty !== null) return;
         val delta = newValue - oldValue;
-        system.setTotalWeightInKg(system.getTotalWeightInKg() + delta);
+        system.setTotalMassInKg(system.getTotalMassInKg() + delta);
     }
 }

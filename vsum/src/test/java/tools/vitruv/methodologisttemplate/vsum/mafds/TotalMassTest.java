@@ -33,7 +33,7 @@ import uncertainty.Uncertainty;
 import uncertainty.UncertaintyAnnotationRepository;
 import uncertainty.UncertaintyLocationType;
 
-public class TotalWeightTest {
+public class TotalMassTest {
 
     @BeforeAll
     static void setup() {
@@ -42,7 +42,7 @@ public class TotalWeightTest {
     }
 
     @Test
-    @DisplayName("Model Damper System and Compute Weight")
+    @DisplayName("Model Damper System and Compute Mass")
     void addDamperSystemTest(@TempDir Path tempDir) {
 
         // SETUP VSUM
@@ -59,12 +59,12 @@ public class TotalWeightTest {
                 .withChangeRecordingTrait();
         DamperSystem damperSystem = getDamperSystem(afterAddView);
 
-        assertEquals(50.7146, damperSystem.getTotalWeightInKg(), 0.001);
+        assertEquals(50.7146, damperSystem.getTotalMassInKg(), 0.001);
 
     }
 
     @Test
-    @DisplayName("Model Damper System and Compute Weight With Uncertainty Annotations")
+    @DisplayName("Model Damper System and Compute Mass With Uncertainty Annotations")
     void addDamperSystemWithUncertaintyTest(@TempDir Path tempDir) {
         VirtualModel vsum = UncertaintyTestUtil.createDefaultVirtualModel(tempDir);
         UncertaintyTestUtil.registerRootObjects(vsum, tempDir);
@@ -76,7 +76,7 @@ public class TotalWeightTest {
                 List.of(DamperRepository.class, UncertaintyAnnotationRepository.class))
                 .withChangeRecordingTrait();
         DamperSystem damperSystem = getDamperSystem(view);
-        assertEquals(50.7146, damperSystem.getTotalWeightInKg(), 0.001);
+        assertEquals(50.7146, damperSystem.getTotalMassInKg(), 0.001);
         // Assert that number of uncertainties is as expected
         UncertaintyAnnotationRepository uncertaintyRepo = view
                 .getRootObjects(UncertaintyAnnotationRepository.class).iterator().next();
@@ -84,7 +84,7 @@ public class TotalWeightTest {
     }
 
     @Test
-    @DisplayName("Model Damper System and Compute Weight With Uncertainty Annotations and StoEx")
+    @DisplayName("Model Damper System and Compute Mass With Uncertainty Annotations and StoEx")
     void addDamperSystemWithUncertaintyAndStoExTest(@TempDir Path tempDir) {
         VirtualModel vsum = UncertaintyTestUtil.createDefaultVirtualModel(tempDir);
         UncertaintyTestUtil.registerRootObjects(vsum, tempDir);
@@ -99,7 +99,7 @@ public class TotalWeightTest {
                 .withChangeRecordingTrait();
 
         DamperSystem damperSystem = getDamperSystem(view);
-        assertEquals(50.7146, damperSystem.getTotalWeightInKg(), 0.001);
+        assertEquals(50.7146, damperSystem.getTotalMassInKg(), 0.001);
 
         Uncertainty totalMassUncertainty = getTotalMassUncertainty(view);
         System.out.println("Total Mass Uncertainty: " + totalMassUncertainty);
@@ -136,7 +136,7 @@ public class TotalWeightTest {
 
     private DamperSystem getDamperSystem(View view) {
         DamperRepository damperRepository = view.getRootObjects(DamperRepository.class).iterator().next();
-        return damperRepository.getDampers();
+        return damperRepository.getDamperSystems().stream().findFirst().orElse(null);
     }
 
     private void annotateWithUncertainty(CommittableView view) {
@@ -196,7 +196,7 @@ public class TotalWeightTest {
                 "dampingConstantInNsPerM");
         Uncertainty springSupportMassUncertainty = createUncertainty(springDamper,
                 "springSupportMassInKg");
-        view.getRootObjects(DamperRepository.class).iterator().next().setDampers(damperSystem);
+        view.getRootObjects(DamperRepository.class).iterator().next().getDamperSystems().add(damperSystem);
 
         List<Uncertainty> allUncertainties = List.of(upperTrussCrossLinkMassUncertainty,
                 upperTrussSphereMassUncertainty,
@@ -275,7 +275,7 @@ public class TotalWeightTest {
         Uncertainty springSupportMassUncertainty = createUncertainty(springDamper,
                 "springSupportMassInKg",
                 20.35, 0.25);
-        view.getRootObjects(DamperRepository.class).iterator().next().setDampers(damperSystem);
+        view.getRootObjects(DamperRepository.class).iterator().next().getDamperSystems().add(damperSystem);
 
         List<Uncertainty> allUncertainties = List.of(upperTrussCrossLinkMassUncertainty,
                 upperTrussSphereMassUncertainty,
@@ -332,9 +332,9 @@ public class TotalWeightTest {
         damperSystem.setLowerTruss(lowerTruss);
         damperSystem.setGuidanceElement(guidanceElement);
         damperSystem.setSpringDamper(springDamper);
-        // Total Weight Damper System: 22.123 + 5.3036 + 20.35 + 2.938 = 50.7146
+        // Total Mass Damper System: 22.123 + 5.3036 + 20.35 + 2.938 = 50.7146
 
-        view.getRootObjects(DamperRepository.class).iterator().next().setDampers(damperSystem);
+        view.getRootObjects(DamperRepository.class).iterator().next().getDamperSystems().add(damperSystem);
     }
 
     private void modifyView(CommittableView view, Consumer<CommittableView> modificationFunction) {
