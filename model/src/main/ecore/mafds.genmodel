@@ -15,7 +15,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mafds.ecore#//DamperSystem/springDamper"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference mafds.ecore#//DamperSystem/guidanceElement"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mafds.ecore#//DamperSystem/dampingRatio"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mafds.ecore#//DamperSystem/NatrualFrequencyInHz"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mafds.ecore#//DamperSystem/naturalFrequencyInHz"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mafds.ecore#//DamperSystem/totalMassInKg"/>
     </genClasses>
     <genClasses ecoreClass="mafds.ecore#//LowerTruss">
