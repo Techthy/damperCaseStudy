@@ -13,6 +13,7 @@ in reaction to changes in mafdsModel
 execute actions in mafdsModel
 
 
+/* Reactions regarding the total mass */
 reaction UpperTrussSphereMassChanged {
     after attribute replaced at mafdsModel::UpperTruss[sphereMassInKg] 
     call totalMassChanged("sphereMassInKg", newValue, oldValue, affectedEObject, affectedEObject.eContainer() as DamperSystem)
@@ -100,5 +101,30 @@ routine totalMassChanged(String parameterLocation, Double newValue, Double oldVa
         if (uncertainty !== null) return;
         val delta = newValue - oldValue;
         system.setTotalMassInKg(system.getTotalMassInKg() + delta);
+    }
+}
+
+
+/* Reactions regarding the damping ratio */
+reaction totalMassChanged {
+    after attribute replaced at mafdsModel::DamperSystem[totalMassInKg] 
+    call recomputeDampingRatio(affectedEObject)
+}
+
+reaction springStiffnessChanged {
+    after attribute replaced at mafdsModel::SpringDamper[stiffnessInNPerM] 
+    call recomputeDampingRatio(affectedEObject.eContainer() as DamperSystem)
+}
+
+reaction dampingConstantChanged {
+    after attribute replaced at mafdsModel::SpringDamper[dampingConstantInNsPerM] 
+    call recomputeDampingRatio(affectedEObject.eContainer() as DamperSystem)
+}
+
+routine recomputeDampingRatio(mafdsModel::DamperSystem system) {
+    update {
+        val dampingConstant = system.getSpringDamper().getDampingConstantInNsPerM()
+        val springStiffness = system.getSpringDamper().getStiffnessInNPerM()
+        system.setDampingRatio(dampingConstant / (2 * Math.sqrt(system.getTotalMassInKg() * springStiffness)));
     }
 }
