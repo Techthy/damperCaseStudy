@@ -54,7 +54,6 @@ public class StoexConsistencyHelper {
         } else {
             throw new IllegalArgumentException("Expression did not evaluate to a valid Stoex Expression or Number.");
         }
-
     }
 
     public String serializeToStoexExpression(Object expression) {

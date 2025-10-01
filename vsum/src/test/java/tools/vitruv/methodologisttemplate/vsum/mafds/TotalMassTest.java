@@ -189,9 +189,7 @@ public class TotalMassTest {
         springDamper.setSpringSupportMassInKg(20.35);
         damperSystem.setSpringDamper(springDamper);
         // Mass Spring Damper: 20.35
-        Uncertainty springStiffnessUncertainty = createUncertainty(springDamper, "stiffnessInNPerM",
-                27000,
-                1200);
+        Uncertainty springStiffnessUncertainty = createUncertainty(springDamper, "stiffnessInNPerM");
         Uncertainty springDampingConstantUncertainty = createUncertainty(springDamper,
                 "dampingConstantInNsPerM");
         Uncertainty springSupportMassUncertainty = createUncertainty(springDamper,

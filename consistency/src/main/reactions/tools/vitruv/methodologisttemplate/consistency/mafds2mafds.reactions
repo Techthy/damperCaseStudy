@@ -3,6 +3,7 @@ import mafds.DamperSystem;
 
 
 import tools.vitruv.methodologisttemplate.consistency.TotalMassReactionsHelper;
+import tools.vitruv.methodologisttemplate.consistency.DampingRatioReactionsHelper;
 
 import "http://www.example.org/mafds" as mafdsModel
 import "http://www.example.org/uncertainty" as uncertaintyModel
@@ -108,21 +109,26 @@ routine totalMassChanged(String parameterLocation, Double newValue, Double oldVa
 /* Reactions regarding the damping ratio */
 reaction totalMassChanged {
     after attribute replaced at mafdsModel::DamperSystem[totalMassInKg] 
-    call recomputeDampingRatio(affectedEObject)
+    call recomputeDampingRatio(affectedEObject, "totalMassInKg", affectedEObject)
 }
 
 reaction springStiffnessChanged {
     after attribute replaced at mafdsModel::SpringDamper[stiffnessInNPerM] 
-    call recomputeDampingRatio(affectedEObject.eContainer() as DamperSystem)
+    call recomputeDampingRatio(affectedEObject.eContainer() as DamperSystem, "stiffnessInNPerM", affectedEObject)
 }
 
 reaction dampingConstantChanged {
     after attribute replaced at mafdsModel::SpringDamper[dampingConstantInNsPerM] 
-    call recomputeDampingRatio(affectedEObject.eContainer() as DamperSystem)
+    call recomputeDampingRatio(affectedEObject.eContainer() as DamperSystem, "dampingConstantInNsPerM", affectedEObject)
 }
 
-routine recomputeDampingRatio(mafdsModel::DamperSystem system) {
+routine recomputeDampingRatio(mafdsModel::DamperSystem system, String parameterLocation, EObject affectedEObject) {
+    match {
+        val uncertaintyRepo = retrieve uncertaintyModel::UncertaintyAnnotationRepository corresponding to system.eContainer()
+    }
     update {
+        val uncertainty = DampingRatioReactionsHelper.handleUncertainty(uncertaintyRepo, system, parameterLocation, affectedEObject);
+        if (uncertainty !== null) return;
         val dampingConstant = system.getSpringDamper().getDampingConstantInNsPerM()
         val springStiffness = system.getSpringDamper().getStiffnessInNPerM()
         system.setDampingRatio(dampingConstant / (2 * Math.sqrt(system.getTotalMassInKg() * springStiffness)));
