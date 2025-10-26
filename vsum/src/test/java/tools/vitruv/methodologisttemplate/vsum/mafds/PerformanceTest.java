@@ -20,6 +20,7 @@ public class PerformanceTest {
 
     private DampingRatioTest dampingRatioTestInstance;
     private TotalMassTest totalMassTestInstance;
+    private static final int ITERATIONS = 10;
 
     @Test
     @DisplayName("Performance Test: Measure DampingRatio and TotalMass Test Execution Times")
@@ -80,7 +81,7 @@ public class PerformanceTest {
         System.out.println("RUNNING MULTIPLE ITERATIONS FOR STATISTICAL ANALYSIS");
         System.out.println("=".repeat(70));
 
-        runMultipleIterations(tempDir, 100);
+        runMultipleIterations(tempDir, ITERATIONS);
     }
 
     private TestResult measureTestExecution(String testName, Runnable testMethod) {
@@ -100,9 +101,9 @@ public class PerformanceTest {
 
             TestResult result = new TestResult(testName, executionTimeNanos, memoryUsed, true);
 
-            // System.out.println(" ✓ Completed in " + formatTime(executionTimeNanos));
-            // System.out.println(" Memory change: " + formatMemory(memoryUsed));
-            // System.out.println();
+            System.out.println(" ✓ Completed in " + formatTime(executionTimeNanos));
+            System.out.println(" Memory change: " + formatMemory(memoryUsed));
+            System.out.println();
 
             return result;
 
@@ -110,9 +111,9 @@ public class PerformanceTest {
             long endTime = System.nanoTime();
             long executionTimeNanos = endTime - startTime;
 
-            // System.out.println(" ✗ Failed after " + formatTime(executionTimeNanos));
-            // System.out.println(" Error: " + e.getMessage());
-            // System.out.println();
+            System.out.println(" ✗ Failed after " + formatTime(executionTimeNanos));
+            System.out.println(" Error: " + e.getMessage());
+            System.out.println();
 
             return new TestResult(testName, executionTimeNanos, 0, false);
         }

@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import mafds.DamperSystem;
-import tools.vitruv.methodologisttemplate.consistency.utils.StoexConsistencyHelper;
+import tools.vitruv.stoex.interpreter.StoexEvaluator;
 import tools.vitruv.stoex.stoex.DoubleLiteral;
 import tools.vitruv.stoex.stoex.Expression;
 import tools.vitruv.stoex.stoex.StoexFactory;
@@ -40,7 +40,7 @@ public class DampingRatioReactionsHelper {
 
         Uncertainty dampingRatioUncertainty = findUncertaintyByLocation(repo, "dampingRatio");
 
-        StoexConsistencyHelper helper = new StoexConsistencyHelper();
+        StoexEvaluator stoexEvaluator = new StoexEvaluator();
 
         if (dampingRatioUncertainty == null) {
             dampingRatioUncertainty = UncertaintyReactionsHelper.deepCopyUncertainty(affectedUncertainty);
@@ -50,13 +50,13 @@ public class DampingRatioReactionsHelper {
             repo.getUncertainties().add(dampingRatioUncertainty);
         }
 
-        helper.putVariable("c", getExpression(repo, springDamper, "dampingConstantInNsPerM"));
-        helper.putVariable("k", getExpression(repo, springDamper, "stiffnessInNPerM"));
-        helper.putVariable("m", getExpression(repo, springDamper, "totalMassInKg"));
-        Expression newDampingRatioExpr = helper
-                .evaluateToStoexExpression("c / (2 * (k * m)^0.5)");
+        stoexEvaluator.setVariable("c", getExpression(repo, springDamper, "dampingConstantInNsPerM"));
+        stoexEvaluator.setVariable("k", getExpression(repo, springDamper, "stiffnessInNPerM"));
+        stoexEvaluator.setVariable("m", getExpression(repo, springDamper, "totalMassInKg"));
+        Expression newDampingRatioExpr = stoexEvaluator
+                .evaluate("c / (2 * (k * m)^0.5)");
         dampingRatioUncertainty.getEffect().setExpression(newDampingRatioExpr);
-        springDamper.setDampingRatio(helper.getMean(newDampingRatioExpr).doubleValue());
+        springDamper.setDampingRatio(stoexEvaluator.getMean(newDampingRatioExpr).doubleValue());
         return dampingRatioUncertainty;
     }
 

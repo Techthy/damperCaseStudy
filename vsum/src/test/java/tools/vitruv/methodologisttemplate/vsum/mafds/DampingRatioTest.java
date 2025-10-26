@@ -8,23 +8,19 @@ import org.eclipse.emf.ecore.EObject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import mafds.DamperRepository;
 import mafds.DamperSystem;
-import mafds.GuidanceElement;
-import mafds.LowerTruss;
 import mafds.MafdsFactory;
 import mafds.SpringDamper;
-import mafds.UpperTruss;
 import tools.vitruv.framework.views.CommittableView;
 import tools.vitruv.framework.views.View;
 import tools.vitruv.framework.vsum.VirtualModel;
-import tools.vitruv.methodologisttemplate.consistency.utils.StoexConsistencyHelper;
 import tools.vitruv.methodologisttemplate.vsum.uncertainty.UncertaintyTestFactory;
 import tools.vitruv.methodologisttemplate.vsum.uncertainty.UncertaintyTestUtil;
+import tools.vitruv.stoex.interpreter.StoexEvaluator;
 import tools.vitruv.stoex.stoex.Expression;
 import tools.vitruv.stoex.stoex.NormalDistribution;
 import tools.vitruv.stoex.stoex.SampledDistribution;
@@ -106,9 +102,9 @@ public class DampingRatioTest {
         assertEquals("dampingRatio", dampingUncertainty.getUncertaintyLocation().getParameterLocation());
 
         Expression expr = dampingUncertainty.getEffect().getExpression();
-        StoexConsistencyHelper helper = new StoexConsistencyHelper();
+        StoexEvaluator evaluator = new StoexEvaluator();
         assertTrue(expr instanceof SampledDistribution);
-        assertEquals(0.0598204473, helper.getMean(expr).doubleValue(), 0.001);
+        assertEquals(0.0598204473, evaluator.getMean(expr).doubleValue(), 0.001);
     }
 
     private Uncertainty getDampingRatioUncertainty(View view) {
