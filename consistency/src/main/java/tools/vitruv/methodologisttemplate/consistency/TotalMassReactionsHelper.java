@@ -10,6 +10,18 @@ import uncertainty.Uncertainty;
 import uncertainty.UncertaintyAnnotationRepository;
 import uncertainty.UncertaintyLocationType;
 
+/**
+ * This test class tests the propagation of the total mass
+ * the parameters damping constant, spring stiffness and total mass.
+ * The first test, shows the propagation without using the UnCertaGator.
+ * The second test shows the same propagation but with the UnCertaGator and
+ * uncertainty annotations.
+ * The third test shows the same propagation now using the UnCertaGator with the
+ * StoEx extension.
+ *
+ *
+ * @author Claus Hammann
+ */
 public class TotalMassReactionsHelper {
     private TotalMassReactionsHelper() {
         // Utility class
